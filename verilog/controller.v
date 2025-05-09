@@ -7,7 +7,8 @@ module controller (
     output wire flag_in_com2,
     output wire flag_in_com3,
     output wire flag_in_com4,
-    output wire flag_switch_state2_1
+    output wire flag_switch_state2_1,
+    output wire flag_switch_state3_1
 );
 
     reg [6:0] counter;
@@ -29,6 +30,7 @@ module controller (
     reg flag_in_tmp_com4;
 
     reg flag_switch_tmp_state2_1;
+    reg flag_switch_tmp_state3_1;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -53,16 +55,20 @@ module controller (
         end else begin
             if (counter == 32) begin
                 flag_switch_tmp_state2_1 <= 1;
+            end else if(counter == 36) begin
+                flag_switch_tmp_state3_1 <= 1;
             end
         end
     end
 
     assign flag_switch_state2_1 = flag_switch_tmp_state2_1;
+    assign flag_switch_state3_1 = flag_switch_tmp_state3_1;
 
     assign flag_in_com1 = flag_in_tmp_com1;
     assign flag_in_com2 = flag_in_tmp_com2;
     assign flag_in_com3 = flag_in_tmp_com3;
     assign flag_in_com4 = flag_in_tmp_com4;
+    
 
 
     //-----------------COM-----------------------------//

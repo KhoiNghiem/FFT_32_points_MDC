@@ -52,8 +52,19 @@ module fft (
     end
 
     wire flag_switch_state2_1;
+    wire flag_switch_state3_1;
 
-    controller controler_1(clk, rst_n, rom_16_counter, rom_8_counter, flag_in_com1, flag_in_com2, flag_in_com3, flag_in_com4, flag_switch_state2_1);
+    controller controler_1(clk, 
+                        rst_n, 
+                        rom_16_counter, 
+                        rom_8_counter, 
+                        flag_in_com1, 
+                        flag_in_com2, 
+                        flag_in_com3, 
+                        flag_in_com4, 
+                        flag_switch_state2_1,
+                        flag_switch_state3_1
+    );
     
     //---------State1-------------
 
@@ -61,7 +72,9 @@ module fft (
                     rst_n, 
                     flag_in_com1, 
                     flag_in_com2, 
+                    flag_in_com3,
                     flag_switch_state2_1, 
+                    flag_switch_state3_1,
                     rom_16_counter, 
                     state1_inUI_re, 
                     state1_inUI_im, 
@@ -71,7 +84,7 @@ module fft (
                     state1_outUp_im, 
                     state1_outL_re, 
                     state1_outL_im
-);
+    );
 
     //---------State2-------------
 
@@ -79,7 +92,9 @@ module fft (
                         rst_n, 
                         flag_in_com1, 
                         flag_in_com2, 
+                        flag_in_com3,
                         flag_switch_state2_1, 
+                        flag_switch_state3_1,
                         rom_8_counter, 
                         state1_outUp_re, 
                         state1_outUp_im, 
@@ -94,9 +109,39 @@ module fft (
     wire signed [8:0] state3_shift1_re;
     wire signed [8:0] state3_shift1_im;
 
-    shift_16#(4, 9) state3_shift_1(clk, rst_n, state2_outUp_re, state2_outUp_im, state3_shift1_re, state3_shift1_im);
+    wire signed [8:0] state3_comUp_re;
+    wire signed [8:0] state3_comUp_im;
+    wire signed [8:0] state3_comL_re;
+    wire signed [8:0] state3_comL_im;
 
-    
+    shift#(4, 9) state3_shift_1(clk, 
+                                rst_n, 
+                                state2_outUp_re, 
+                                state2_outUp_im, 
+                                state3_shift1_re, 
+                                state3_shift1_im
+    );
+
+    commutator#(9) state3_com(1'b0,
+                            flag_in_com1,
+                            flag_in_com2,
+                            flag_in_com2,
+                            flag_switch_state2_1, 
+                            flag_switch_state3_1,
+                            state2_outUp_re,
+                            state2_outUp_im,
+                            state3_shift1_re,
+                            state3_shift1_im,
+                            state3_comUp_re,
+                            state3_comUp_im,
+                            state3_comL_re,
+                            state3_comL_im
+    );
+
+    assign MDCOutUpRe = state3_comUp_re;
+    assign MDCOutUpIm = state3_comUp_im;
+    assign MDCOutDownRe = state3_comL_re;
+    assign MDCOutDownIm = state3_comL_im;
 
 
 endmodule

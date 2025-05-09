@@ -5,7 +5,9 @@ module fft_state1 #(
     input rst_n,
     input flag_in_com1,
     input flag_in_com2,
+    input flag_in_com3,
     input flag_switch_state2_1,
+    input flag_switch_state3_1,
     input [3:0] rom_16_counter,
     input signed [WIDTH-1:0] state1_inUI_re,
     input signed [WIDTH-1:0] state1_inUI_im,
@@ -38,9 +40,22 @@ module fft_state1 #(
     wire signed [18:0] state1_mul_l_im;
 
 
-    commutator_input#(9) state1_com (1'b1, flag_in_com1, flag_in_com2, flag_switch_state2_1, state1_inUI_re, state1_inUI_im, state1_inLI_re, state1_inLI_im, state1_comUp_re, state1_comUp_im, state1_comL_re, state1_comL_im);
+    commutator#(9) state1_com (1'b1, 
+                            flag_in_com1, 
+                            flag_in_com2, 
+                            flag_switch_state2_1, 
+                            flag_switch_state3_1, 
+                            state1_inUI_re, 
+                            state1_inUI_im, 
+                            state1_inLI_re, 
+                            state1_inLI_im, 
+                            state1_comUp_re, 
+                            state1_comUp_im, 
+                            state1_comL_re, 
+                            state1_comL_im
+    );
 
-    shift_16#(16, 9) state1_shift_1(clk, rst_n, state1_comUp_re, state1_comUp_im, state1_shift_re, state1_shift_im);
+    shift#(16, 9) state1_shift_1(clk, rst_n, state1_comUp_re, state1_comUp_im, state1_shift_re, state1_shift_im);
 
     butterfly#(10) state_1butter(1'b0, state1_shift_re, state1_shift_im, state1_comL_re, state1_comL_im, state1_butter_up_re, state1_butter_up_im, state1_butter_l_re, state1_butter_l_im);
 

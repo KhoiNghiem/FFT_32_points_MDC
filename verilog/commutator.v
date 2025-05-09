@@ -1,10 +1,12 @@
-module commutator_input #(
+module commutator #(
     parameter WIDTH = 9
 )(
     input  wire                  mode,     // 0: switch, 1: bypass
     input wire                   flag_in_com1,
     input wire                   flag_in_com2,
+    input wire                   flag_in_com3,
     input wire                   flag_switch_state2,
+    input wire                   flag_switch_state3,
     input  wire signed [WIDTH-1:0] inUI_re,
     input  wire signed [WIDTH-1:0] inUI_im,
     input  wire signed [WIDTH-1:0] inLI_re,
@@ -37,7 +39,16 @@ always @(*) begin
         end else if (flag_switch_state2) begin
             Low_out_re = inLI_re;
             Low_out_im = inLI_im;
-        end 
+
+        end else if (flag_in_com3 && !flag_switch_state3) begin
+            Up_out_re = inLI_re;
+            Up_out_im = inLI_im;
+            Low_out_re = inUI_re;
+            Low_out_im = inUI_im;
+        end else if (flag_switch_state3) begin
+            Low_out_re = inLI_re;
+            Low_out_im = inLI_im;
+        end
     end
 end
 
