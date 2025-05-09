@@ -32,11 +32,6 @@ module fft (
 
     wire signed [2:0] rom_8_counter;
 
-    wire flag_in_com1;
-    wire flag_in_com2;
-    wire flag_in_com3;
-    wire flag_in_com4;
-
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -51,30 +46,37 @@ module fft (
         end
     end
 
-    wire flag_switch_state2_1;
-    wire flag_switch_state3_1;
+
+    wire state1_com1_flag;
+    wire state2_com1_flag;
+    wire state2_com2_flag;
+    wire state3_com1_flag;
+    wire state3_com2_flag;
+    wire state3_com3_flag;
+
 
     controller controler_1(clk, 
                         rst_n, 
                         rom_16_counter, 
                         rom_8_counter, 
-                        flag_in_com1, 
-                        flag_in_com2, 
-                        flag_in_com3, 
-                        flag_in_com4, 
-                        flag_switch_state2_1,
-                        flag_switch_state3_1
+                        state1_com1_flag,
+                        state2_com1_flag,
+                        state2_com2_flag,
+                        state3_com1_flag,
+                        state3_com2_flag,
+                        state3_com3_flag
     );
     
     //---------State1-------------
 
     fft_state1 state1(clk, 
                     rst_n, 
-                    flag_in_com1, 
-                    flag_in_com2, 
-                    flag_in_com3,
-                    flag_switch_state2_1, 
-                    flag_switch_state3_1,
+                    state1_com1_flag,
+                    state2_com1_flag,
+                    state2_com2_flag,
+                    state3_com1_flag,
+                    state3_com2_flag,
+                    state3_com3_flag,
                     rom_16_counter, 
                     state1_inUI_re, 
                     state1_inUI_im, 
@@ -88,13 +90,15 @@ module fft (
 
     //---------State2-------------
 
+
     fft_state2#(9) state2(clk, 
                         rst_n, 
-                        flag_in_com1, 
-                        flag_in_com2, 
-                        flag_in_com3,
-                        flag_switch_state2_1, 
-                        flag_switch_state3_1,
+                        state1_com1_flag,
+                        state2_com1_flag,
+                        state2_com2_flag,
+                        state3_com1_flag,
+                        state3_com2_flag,
+                        state3_com3_flag,
                         rom_8_counter, 
                         state1_outUp_re, 
                         state1_outUp_im, 
@@ -116,18 +120,19 @@ module fft (
 
     shift#(4, 9) state3_shift_1(clk, 
                                 rst_n, 
-                                state2_outUp_re, 
-                                state2_outUp_im, 
+                                state2_outL_re, 
+                                state2_outL_im, 
                                 state3_shift1_re, 
                                 state3_shift1_im
     );
 
     commutator#(9) state3_com(1'b0,
-                            flag_in_com1,
-                            flag_in_com2,
-                            flag_in_com2,
-                            flag_switch_state2_1, 
-                            flag_switch_state3_1,
+                            state1_com1_flag,
+                            state2_com1_flag,
+                            state2_com2_flag,
+                            state3_com1_flag,
+                            state3_com2_flag,
+                            state3_com3_flag,
                             state2_outUp_re,
                             state2_outUp_im,
                             state3_shift1_re,
