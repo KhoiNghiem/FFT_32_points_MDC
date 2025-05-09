@@ -37,8 +37,7 @@ module fft (
         if (!rst_n) begin
             state1_inUI_re <= 0;
             state1_inUI_im <= 0;
-            state1_inLI_re <= 0;
-            state1_inLI_im <= 0;
+            
             
         end else begin
             state1_inLI_re <= FFTInRe;
@@ -54,29 +53,20 @@ module fft (
     wire state3_com2_flag;
     wire state3_com3_flag;
 
+    wire [5:0] state_code;
 
     controller controler_1(clk, 
                         rst_n, 
                         rom_16_counter, 
                         rom_8_counter, 
-                        state1_com1_flag,
-                        state2_com1_flag,
-                        state2_com2_flag,
-                        state3_com1_flag,
-                        state3_com2_flag,
-                        state3_com3_flag
+                        state_code
     );
     
     //---------State1-------------
 
     fft_state1 state1(clk, 
                     rst_n, 
-                    state1_com1_flag,
-                    state2_com1_flag,
-                    state2_com2_flag,
-                    state3_com1_flag,
-                    state3_com2_flag,
-                    state3_com3_flag,
+                    state_code,
                     rom_16_counter, 
                     state1_inUI_re, 
                     state1_inUI_im, 
@@ -93,12 +83,7 @@ module fft (
 
     fft_state2#(9) state2(clk, 
                         rst_n, 
-                        state1_com1_flag,
-                        state2_com1_flag,
-                        state2_com2_flag,
-                        state3_com1_flag,
-                        state3_com2_flag,
-                        state3_com3_flag,
+                        state_code,
                         rom_8_counter, 
                         state1_outUp_re, 
                         state1_outUp_im, 
@@ -126,27 +111,22 @@ module fft (
                                 state3_shift1_im
     );
 
-    commutator#(9) state3_com(1'b0,
-                            state1_com1_flag,
-                            state2_com1_flag,
-                            state2_com2_flag,
-                            state3_com1_flag,
-                            state3_com2_flag,
-                            state3_com3_flag,
-                            state2_outUp_re,
-                            state2_outUp_im,
-                            state3_shift1_re,
-                            state3_shift1_im,
-                            state3_comUp_re,
-                            state3_comUp_im,
-                            state3_comL_re,
-                            state3_comL_im
-    );
+    // commutator#(9) state3_com(1'b0,
+    //                         state_code,
+    //                         state2_outUp_re,
+    //                         state2_outUp_im,
+    //                         state3_shift1_re,
+    //                         state3_shift1_im,
+    //                         state3_comUp_re,
+    //                         state3_comUp_im,
+    //                         state3_comL_re,
+    //                         state3_comL_im
+    // );
 
-    assign MDCOutUpRe = state3_comUp_re;
-    assign MDCOutUpIm = state3_comUp_im;
-    assign MDCOutDownRe = state3_comL_re;
-    assign MDCOutDownIm = state3_comL_im;
+    // assign MDCOutUpRe = state3_comUp_re;
+    // assign MDCOutUpIm = state3_comUp_im;
+    // assign MDCOutDownRe = state3_comL_re;
+    // assign MDCOutDownIm = state3_comL_im;
 
 
 endmodule

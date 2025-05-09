@@ -4,16 +4,12 @@ module controller (
     output reg [3:0] rom_16_counter,
     output reg [2:0] rom_8_counter,
 
-    output wire state1_com1_flag, 
-    output wire state2_com1_flag,
-    output wire state2_com2_flag,
-    output wire state3_com1_flag,
-    output wire state3_com2_flag,
-    output wire state3_com3_flag
+    output reg  [5:0]  com_mask
 );
 
     reg [6:0] counter;
     
+    reg  [4:0]  state_start;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -24,74 +20,33 @@ module controller (
     end
 
     //-----------------COM-----------------------------//
-
-    reg state1_com1_flag_tmp;
-
-    reg state2_com1_flag_tmp;
-    reg state2_com2_flag_tmp;
-
-    reg state3_com1_flag_tmp;
-    reg state3_com2_flag_tmp;
-    reg state3_com3_flag_tmp;
+// Các trạng thái điều khiển
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            state2_com1_flag_tmp <= 0;
-            state2_com2_flag_tmp <= 0;
-            state1_com1_flag_tmp <= 0;
+            com_mask <= 6'b0;
+            state_start <= 6'b0;
         end else begin
-            // Default reset
-            if (counter > 15 && counter < 32) begin
-                state1_com1_flag_tmp <= 1;
-            end else begin
-                state1_com1_flag_tmp <= 0;
-            end
+            com_mask[0] <= (counter > 15 && counter < 32);  // state1_com1_flag
+            com_mask[1] <= (counter > 15 && counter < 24);  // state2_com1_flag
+            com_mask[2] <= (counter > 23 && counter < 32);  // state2_com2_flag
+            com_mask[3] <= (counter > 23 && counter < 28) || (counter > 31 && counter < 36); // state3_com1
+            com_mask[4] <= (counter > 27 && counter < 32) || (counter > 35 && counter < 40); // state3_com2
+            com_mask[5] <= (counter > 39 && counter < 44);  // state3_com3
 
-            if (counter > 15 && counter < 24) begin
-                state2_com1_flag_tmp <= 1;
-            end else begin
-                state2_com1_flag_tmp <= 0;
-            end
+            state_start[0] <= (counter == 0);
+            state_start[1] <= (counter == 16);
+            state_start[2] <= (counter == 24);
+            state_start[3] <= (counter == 28);
+            state_start[4] <= (counter == 30);
 
-            if (counter > 23 && counter < 32) begin
-                state2_com2_flag_tmp <= 1;
-            end else begin
-                state2_com2_flag_tmp <= 0;
-            end
-
-            if ((counter > 23 && counter < 28) || (counter > 31 && counter < 36)) begin
-                state3_com1_flag_tmp <= 1;
-            end else begin
-                state3_com1_flag_tmp <= 0;
-            end
-            if ((counter > 27 && counter < 32) || (counter > 35 && counter < 40)) begin
-                state3_com2_flag_tmp <= 1;
-            end else begin
-                state3_com2_flag_tmp <= 0;
-            end
-            if ((counter > 39 && counter < 44)) begin
-                state3_com3_flag_tmp <= 1;
-            end else begin
-                state3_com3_flag_tmp <= 0;
-            end
         end
     end
 
 
-
     
 //----------------------------------------------------------
-    assign state1_com1_flag = state1_com1_flag_tmp;
 
-    assign state2_com1_flag = state2_com1_flag_tmp;
-    assign state2_com2_flag = state2_com2_flag_tmp;
-
-    assign state3_com1_flag = state3_com1_flag_tmp;
-    assign state3_com2_flag = state3_com2_flag_tmp;
-    assign state3_com3_flag = state3_com3_flag_tmp;
-
-
-//---------------------------------------------------------- 
 
 
     //-----------------COM-----------------------------//

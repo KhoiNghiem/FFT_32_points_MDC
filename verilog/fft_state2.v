@@ -3,12 +3,7 @@ module fft_state2 #(
 ) (
     input clk,
     input rst_n,
-    input state1_com1_flag,
-    input state2_com1_flag,
-    input state2_com2_flag,
-    input state3_com1_flag,
-    input state3_com2_flag,
-    input state3_com3_flag,
+    input [5:0] state_code,
     input [2:0] rom_8_counter,
     input signed [WIDTH-1:0] state1_outUp_re,
     input signed [WIDTH-1:0] state1_outUp_im,
@@ -52,12 +47,7 @@ module fft_state2 #(
     );
 
     commutator#(9) state2_com(1'b0, 
-                            state1_com1_flag,
-                            state2_com1_flag,
-                            state2_com2_flag,
-                            state3_com1_flag,
-                            state3_com2_flag,
-                            state3_com3_flag,
+                            state_code,
                             state1_outUp_re, 
                             state1_outUp_im, 
                             state2_shift1_re, 
