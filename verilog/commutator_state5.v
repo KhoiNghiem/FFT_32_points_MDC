@@ -1,0 +1,37 @@
+module commutator_state5 #(
+    parameter WIDTH = 9
+)(
+    input  wire                  mode,     // 0: switch, 1: bypass
+    input  wire                  state5_com_flag, // bitmask of states
+    input  wire signed [WIDTH-1:0] inUI_re,
+    input  wire signed [WIDTH-1:0] inUI_im,
+    input  wire signed [WIDTH-1:0] inLI_re,
+    input  wire signed [WIDTH-1:0] inLI_im,
+    output reg  signed [WIDTH-1:0] Up_out_re,
+    output reg  signed [WIDTH-1:0] Up_out_im,
+    output reg  signed [WIDTH-1:0] Low_out_re,
+    output reg  signed [WIDTH-1:0] Low_out_im
+);
+
+    always @(*) begin
+
+
+        if (!mode) begin  // Switch mode
+
+            if (state5_com_flag) begin  // state2_com1_flag
+                Up_out_re = inUI_re;
+                Up_out_im = inUI_im;
+                Low_out_re = inLI_re;
+                Low_out_im = inLI_im;
+            end else if (!state5_com_flag) begin  // state2_com2_flag
+                Up_out_re = inLI_re;
+                Up_out_im = inLI_im;
+                Low_out_re = inUI_re;
+                Low_out_im = inUI_im;
+            end 
+        end else begin
+            
+        end
+    end
+
+endmodule

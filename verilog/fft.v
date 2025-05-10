@@ -8,8 +8,9 @@ module fft (
     output wire signed [8:0] MDCOutUpRe,
     output wire signed [8:0] MDCOutUpIm,
     output wire signed [8:0] MDCOutDownRe,
-    output wire signed [8:0] MDCOutDownIm
-
+    output wire signed [8:0] MDCOutDownIm,
+    output wire signed [8:0] FFTOutRe,
+    output wire signed [8:0] FFTOutIm
 );
 //----------------State1------------------
     reg signed [8:0] state1_inUI_re;
@@ -32,6 +33,33 @@ module fft (
 
     wire signed [2:0] rom_8_counter;
 
+//----------------State3------------------
+    wire signed [8:0] state3_outUp_re;
+    wire signed [8:0] state3_outUp_im;
+    wire signed [8:0] state3_outL_re;
+    wire signed [8:0] state3_outL_im;
+
+    wire [1:0] rom_4_counter;
+
+//---------------State4------------------
+    wire signed [8:0] state4_outUp_re;
+    wire signed [8:0] state4_outUp_im;
+    wire signed [8:0] state4_outL_re;
+    wire signed [8:0] state4_outL_im;
+
+    wire state4_com_flag;
+    wire rom_2_counter;
+
+//---------------State5------------------
+    wire signed [8:0] state5_outUp_re;
+    wire signed [8:0] state5_outUp_im;
+    wire signed [8:0] state5_outL_re;
+    wire signed [8:0] state5_outL_im;
+
+    wire state5_com_flag;
+
+//---------------PINGPONG----------------
+    wire valid_ping_pong_in;
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -45,21 +73,18 @@ module fft (
         end
     end
 
-
-    wire state1_com1_flag;
-    wire state2_com1_flag;
-    wire state2_com2_flag;
-    wire state3_com1_flag;
-    wire state3_com2_flag;
-    wire state3_com3_flag;
-
-    wire [5:0] state_code;
+    wire [6:0] state_code;
 
     controller controler_1(clk, 
                         rst_n, 
                         rom_16_counter, 
                         rom_8_counter, 
-                        state_code
+                        rom_4_counter,
+                        rom_2_counter,
+                        state_code,
+                        state4_com_flag,
+                        state5_com_flag,
+                        valid_ping_pong_in
     );
     
     //---------State1-------------
@@ -93,40 +118,68 @@ module fft (
                         state2_outUp_im, 
                         state2_outL_re, 
                         state2_outL_im
-);
-
-    wire signed [8:0] state3_shift1_re;
-    wire signed [8:0] state3_shift1_im;
-
-    wire signed [8:0] state3_comUp_re;
-    wire signed [8:0] state3_comUp_im;
-    wire signed [8:0] state3_comL_re;
-    wire signed [8:0] state3_comL_im;
-
-    shift#(4, 9) state3_shift_1(clk, 
-                                rst_n, 
-                                state2_outL_re, 
-                                state2_outL_im, 
-                                state3_shift1_re, 
-                                state3_shift1_im
     );
 
-    // commutator#(9) state3_com(1'b0,
-    //                         state_code,
-    //                         state2_outUp_re,
-    //                         state2_outUp_im,
-    //                         state3_shift1_re,
-    //                         state3_shift1_im,
-    //                         state3_comUp_re,
-    //                         state3_comUp_im,
-    //                         state3_comL_re,
-    //                         state3_comL_im
-    // );
+    //------------State3---------
+    fft_state3#(9) state3(clk, 
+                        rst_n, 
+                        state_code,
+                        rom_4_counter, 
+                        state2_outUp_re, 
+                        state2_outUp_im, 
+                        state2_outL_re, 
+                        state2_outL_im, 
+                        state3_outUp_re, 
+                        state3_outUp_im, 
+                        state3_outL_re, 
+                        state3_outL_im
+    );
 
-    // assign MDCOutUpRe = state3_comUp_re;
-    // assign MDCOutUpIm = state3_comUp_im;
-    // assign MDCOutDownRe = state3_comL_re;
-    // assign MDCOutDownIm = state3_comL_im;
+    //-------------State4----------
 
+    fft_state4#(9) state4(clk, 
+                        rst_n, 
+                        state4_com_flag,
+                        rom_2_counter, 
+                        state3_outUp_re, 
+                        state3_outUp_im, 
+                        state3_outL_re, 
+                        state3_outL_im, 
+                        state4_outUp_re, 
+                        state4_outUp_im, 
+                        state4_outL_re, 
+                        state4_outL_im
+    );
+
+//--------------State5----------------
+
+    fft_state5#(9) state5(clk, 
+                        rst_n, 
+                        state5_com_flag,
+                        state4_outUp_re, 
+                        state4_outUp_im, 
+                        state4_outL_re, 
+                        state4_outL_im, 
+                        state5_outUp_re, 
+                        state5_outUp_im, 
+                        state5_outL_re, 
+                        state5_outL_im
+    );
+
+    assign MDCOutUpRe = state5_outUp_re;
+    assign MDCOutUpIm = state5_outUp_im;
+    assign MDCOutDownRe = state5_outL_re;
+    assign MDCOutDownIm = state5_outL_im;
+
+    ping_pong pp(clk, 
+                rst_n,
+                valid_ping_pong_in,
+                state5_outUp_re,
+                state5_outUp_im,
+                state5_outL_re,
+                state5_outL_im,
+                FFTOutRe,
+                FFTOutIm
+    );
 
 endmodule

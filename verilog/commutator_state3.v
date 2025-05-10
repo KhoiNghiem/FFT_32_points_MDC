@@ -1,4 +1,4 @@
-module commutator #(
+module commutator_state3 #(
     parameter WIDTH = 9
 )(
     input  wire                  mode,     // 0: switch, 1: bypass
@@ -27,15 +27,17 @@ module commutator #(
 
         end else begin  // Switch mode
 
-            if (com_mask[1]) begin  // state2_com1_flag
-                Up_out_re  = inUI_re;
-                Up_out_im  = inUI_im;
-            end else if (com_mask[2]) begin  // state2_com2_flag
-                Up_out_re  = inLI_re;
-                Up_out_im  = inLI_im;
+            if (com_mask[4]) begin  // state2_com1_flag
+                Up_out_re = inUI_re;
+                Up_out_im = inUI_im;
+                Low_out_re = inLI_re;
+                Low_out_im = inLI_im;
+            end else if (com_mask[5]) begin  // state2_com2_flag
+                Up_out_re = inLI_re;
+                Up_out_im = inLI_im;
                 Low_out_re = inUI_re;
                 Low_out_im = inUI_im;
-            end else if (com_mask[3]) begin
+            end else if (com_mask[6]) begin
                 Low_out_re = inLI_re;
                 Low_out_im = inLI_im;
             end
