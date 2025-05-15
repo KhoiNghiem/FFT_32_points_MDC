@@ -34,7 +34,7 @@ module butterfly #(
     output reg  signed [WIDTH-1:0] y1_im
 );
 
-always @(*) begin
+always @(x0_re or x0_im or x1_re or x1_im) begin
     if (!butter_mode) begin  // compute mode
         y0_re = x0_re + x1_re;
         y0_im = x0_im + x1_im;

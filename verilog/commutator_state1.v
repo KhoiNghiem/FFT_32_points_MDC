@@ -25,8 +25,6 @@ module commutator_state1 #(
 )(
     input  wire [4:0]            state_com_mode,     // 0: switch, 1: bypass
     input  wire [6:0]            com_mask, // bitmask of states
-    input  wire signed [WIDTH-1:0] inUI_re,
-    input  wire signed [WIDTH-1:0] inUI_im,
     input  wire signed [WIDTH-1:0] inLI_re,
     input  wire signed [WIDTH-1:0] inLI_im,
     output wire  signed [WIDTH-1:0] Up_out_re,

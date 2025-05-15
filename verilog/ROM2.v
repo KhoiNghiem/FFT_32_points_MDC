@@ -36,7 +36,7 @@ module ROM2 (
         cos_q1 = 9'sd128; sin_q1 = 9'sd0;
     end
 
-    always @(*) begin
+    always @(rom_2_counter) begin
         case (rom_2_counter)
             4'd0: begin
                 w_r = cos_q1;

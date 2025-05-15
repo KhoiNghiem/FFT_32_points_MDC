@@ -30,8 +30,7 @@ module fft_state1 #(
     input       mul_mode,
     input [6:0] state_code,
     input [3:0] rom_16_counter,
-    input signed [WIDTH-1:0] state1_inUI_re,
-    input signed [WIDTH-1:0] state1_inUI_im,
+
     input signed [WIDTH-1:0] state1_inLI_re,
     input signed [WIDTH-1:0] state1_inLI_im,
     
@@ -63,8 +62,6 @@ module fft_state1 #(
 
     commutator_state1#(9) state1_com (state_com_mode, 
                             state_code,
-                            state1_inUI_re, 
-                            state1_inUI_im, 
                             state1_inLI_re, 
                             state1_inLI_im, 
                             state1_comUp_re, 

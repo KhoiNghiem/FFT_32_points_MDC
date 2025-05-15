@@ -39,7 +39,7 @@ module ROM8 (
         cos_q1[3] = 9'sd48;  sin_q1[3] = 9'sd118;
     end
 
-    always @(*) begin
+    always @(rom_8_counter) begin
         case (rom_8_counter)
             4'd0: begin
                 w_r = cos_q1[0];

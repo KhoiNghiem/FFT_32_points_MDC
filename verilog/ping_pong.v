@@ -95,7 +95,7 @@ module ping_pong (
         end
     end
 
-    always @(*) begin
+    always @(read_en, read_sel, rd_addr, bankA_re, bankA_im, bankB_re, bankB_im) begin
         if (read_en) begin
             if (!read_sel) begin
                 memOut_re = bankA_re[rd_addr];
