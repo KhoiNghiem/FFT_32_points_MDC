@@ -1,10 +1,32 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/09/2025 03:41:20 PM
+// Design Name: 
+// Module Name: multiply
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 //----------------------------------------------------------------------
 //  Multiply: Complex Multiplier with Bypass Mode
 //----------------------------------------------------------------------
 module multiply #(
     parameter   WIDTH = 10
 )(
-    input   wire                mode,      // 0: multiply, 1: bypass
+    input   wire                mul_mode,      // 0: multiply, 1: bypass
     input   signed  [WIDTH-1:0] x0_re,
     input   signed  [WIDTH-1:0] x0_im,
     input   signed  [WIDTH-2:0] rom_re,
@@ -23,7 +45,7 @@ assign aibi  = x0_im * rom_im;
 
 
 always @(*) begin
-    if (mode == 1'b0) begin
+    if (!mul_mode) begin
         // Normal complex multiplication
         m_re = arbr - aibi;
         m_im = arbi + aibr;
@@ -35,3 +57,4 @@ always @(*) begin
 end
 
 endmodule
+

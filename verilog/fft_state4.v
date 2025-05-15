@@ -1,8 +1,33 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/15/2025 03:04:46 PM
+// Design Name: 
+// Module Name: fft_state4
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module fft_state4 #(
     parameter WIDTH = 9
 ) (
     input clk,
     input rst_n,
+    input [4:0] state_com_mode,
+    input butter_mode,
+    input mul_mode,
     input state4_com_flag,
     input rom_2_counter,
     input signed [WIDTH-1:0] state3_outUp_re,
@@ -46,7 +71,7 @@ module fft_state4 #(
                                 state4_shift1_im
     );
 
-    commutator_state4#(9) state4_com(1'b0,
+    commutator_state4#(9) state4_com(state_com_mode,
                             state4_com_flag,
                             state3_outUp_re,
                             state3_outUp_im,
@@ -66,7 +91,7 @@ module fft_state4 #(
                                 state4_shift2_im
     );
 
-    butterfly#(10) state4_butter(1'b0, 
+    butterfly#(10) state4_butter(butter_mode, 
                                 state4_shift2_re, 
                                 state4_shift2_im, 
                                 state4_comL_re, 
@@ -81,7 +106,7 @@ module fft_state4 #(
             rom2_re, 
             rom2_im);
 
-    multiply#(10) state4_mul(1'b0, 
+    multiply#(10) state4_mul(mul_mode, 
                             state4_butter_l_re, 
                             state4_butter_l_im, 
                             rom2_re, rom2_im, 

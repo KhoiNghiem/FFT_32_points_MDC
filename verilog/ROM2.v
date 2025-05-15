@@ -1,5 +1,27 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/15/2025 03:16:07 PM
+// Design Name: 
+// Module Name: ROM2
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module ROM2 (
-    input reg rom_2_counter,
+    input rom_2_counter,
     output reg signed [8:0] w_r, 
     output reg signed [8:0] w_i
 );

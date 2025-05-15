@@ -1,5 +1,27 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/15/2025 03:13:36 PM
+// Design Name: 
+// Module Name: ROM4
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module ROM4 (
-    input reg [1:0] rom_4_counter,
+    input [1:0] rom_4_counter,
     output reg signed [8:0] w_r, 
     output reg signed [8:0] w_i
 );

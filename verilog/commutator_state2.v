@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 05/15/2025 03:12:24 PM
+// Create Date: 05/15/2025 05:39:14 PM
 // Design Name: 
-// Module Name: commutator_state3
+// Module Name: commutator_state2
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module commutator_state3 #(
+module commutator_state2 #(
     parameter WIDTH = 9
 )(
     input  wire [4:0]              state_com_mode,  // 0: switch, 1: bypass
@@ -35,31 +35,28 @@ module commutator_state3 #(
     output wire signed [WIDTH-1:0] Low_out_im
 );
 
-    wire is_switch_mode = ~state_com_mode[2];
+    wire is_switch_mode = ~state_com_mode[1];
 
-    assign Up_out_re = is_switch_mode ?
-                        (com_mask[4] ? inUI_re :
-                         com_mask[5] ? inLI_re :
+    assign Up_out_re  = is_switch_mode ?
+                        (com_mask[1] ? inUI_re :
+                         com_mask[2] ? inLI_re :
                          0) : 0;
 
-    assign Up_out_im = is_switch_mode ?
-                        (com_mask[4] ? inUI_im :
-                         com_mask[5] ? inLI_im :
+    assign Up_out_im  = is_switch_mode ?
+                        (com_mask[1] ? inUI_im :
+                         com_mask[2] ? inLI_im :
                          0) : 0;
 
     assign Low_out_re = is_switch_mode ?
-                        (com_mask[4] ? inLI_re :
-                         com_mask[5] ? inUI_re :
-                         com_mask[6] ? inLI_re :
+                        (com_mask[2] ? inUI_re :
+                         com_mask[3] ? inLI_re :
                          0) : 0;
 
     assign Low_out_im = is_switch_mode ?
-                        (com_mask[4] ? inLI_im :
-                         com_mask[5] ? inUI_im :
-                         com_mask[6] ? inLI_im :
+                        (com_mask[2] ? inUI_im :
+                         com_mask[3] ? inLI_im :
                          0) : 0;
 
 endmodule
-
 
 

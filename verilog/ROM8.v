@@ -1,5 +1,27 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/09/2025 03:41:20 PM
+// Design Name: 
+// Module Name: ROM8
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module ROM8 (
-    input reg [2:0] rom_8_counter,
+    input [2:0] rom_8_counter,
     output reg signed [8:0] w_r, 
     output reg signed [8:0] w_i
 );

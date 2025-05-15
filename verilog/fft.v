@@ -1,6 +1,29 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/09/2025 03:41:20 PM
+// Design Name: 
+// Module Name: fft
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module fft (
     input clk,
     input rst_n,
+    input                   valid_in,
     input wire signed [8:0] FFTInRe,
     input wire signed [8:0] FFTInIm,
 
@@ -12,6 +35,12 @@ module fft (
     output wire signed [8:0] FFTOutRe,
     output wire signed [8:0] FFTOutIm
 );
+
+//----------------MODE--------------------
+wire [4:0] state_com_mode;
+wire butter_mode;
+wire mul_mode;
+
 //----------------State1------------------
     reg signed [8:0] state1_inUI_re;
     reg signed [8:0] state1_inUI_im;
@@ -65,7 +94,8 @@ module fft (
         if (!rst_n) begin
             state1_inUI_re <= 0;
             state1_inUI_im <= 0;
-            
+            state1_inLI_re <= 0;
+            state1_inLI_im <= 0;
             
         end else begin
             state1_inLI_re <= FFTInRe;
@@ -77,6 +107,10 @@ module fft (
 
     controller controler_1(clk, 
                         rst_n, 
+                        valid_in,
+                        state_com_mode,
+                        butter_mode,
+                        mul_mode,
                         rom_16_counter, 
                         rom_8_counter, 
                         rom_4_counter,
@@ -91,6 +125,9 @@ module fft (
 
     fft_state1 state1(clk, 
                     rst_n, 
+                    state_com_mode,
+                    butter_mode,
+                    mul_mode,
                     state_code,
                     rom_16_counter, 
                     state1_inUI_re, 
@@ -108,6 +145,9 @@ module fft (
 
     fft_state2#(9) state2(clk, 
                         rst_n, 
+                        state_com_mode,
+                        butter_mode,
+                        mul_mode,
                         state_code,
                         rom_8_counter, 
                         state1_outUp_re, 
@@ -123,6 +163,9 @@ module fft (
     //------------State3---------
     fft_state3#(9) state3(clk, 
                         rst_n, 
+                        state_com_mode,
+                        butter_mode,
+                        mul_mode,
                         state_code,
                         rom_4_counter, 
                         state2_outUp_re, 
@@ -139,6 +182,9 @@ module fft (
 
     fft_state4#(9) state4(clk, 
                         rst_n, 
+                        state_com_mode,
+                        butter_mode,
+                        mul_mode,
                         state4_com_flag,
                         rom_2_counter, 
                         state3_outUp_re, 
@@ -155,6 +201,8 @@ module fft (
 
     fft_state5#(9) state5(clk, 
                         rst_n, 
+                        state_com_mode,
+                        butter_mode,
                         state5_com_flag,
                         state4_outUp_re, 
                         state4_outUp_im, 
